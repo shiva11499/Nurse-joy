@@ -78,7 +78,75 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 mTextViewAngleLeft.setText(angle + "");
                 mTextViewStrengthLeft.setText(strength + "");
                 int anglea = Integer.valueOf(mTextViewAngleLeft.getText().toString());
-                if(strength> 10)
+                if(strength< 20){
+                    if (btSocket!=null)
+                    {
+                        try
+                        {
+                            btSocket.getOutputStream().write("0".getBytes());
+                        }
+                        catch (IOException e)
+                        {
+                            Toast.makeText(getApplicationContext(),"Error",Toast.LENGTH_LONG).show();
+                        }
+                    }
+                }
+                else if(strength< 40 && strength>20){
+                    if (btSocket!=null)
+                    {
+                        try
+                        {
+                            btSocket.getOutputStream().write("a".getBytes());
+                        }
+                        catch (IOException e)
+                        {
+                            Toast.makeText(getApplicationContext(),"Error",Toast.LENGTH_LONG).show();
+                        }
+                    }
+                }
+                else if(strength< 60 && strength>40){
+                    if (btSocket!=null)
+                    {
+                        try
+                        {
+                            btSocket.getOutputStream().write("s".getBytes());
+                        }
+                        catch (IOException e)
+                        {
+                            Toast.makeText(getApplicationContext(),"Error",Toast.LENGTH_LONG).show();
+                        }
+                    }
+                }
+                else if(strength< 80 && strength>60){
+                    if (btSocket!=null)
+                    {
+                        try
+                        {
+                            btSocket.getOutputStream().write("d".getBytes());
+                        }
+                        catch (IOException e)
+                        {
+                            Toast.makeText(getApplicationContext(),"Error",Toast.LENGTH_LONG).show();
+                        }
+                    }
+
+
+                }
+                else if(strength> 80){
+                    if (btSocket!=null)
+                    {
+                        try
+                        {
+                            btSocket.getOutputStream().write("w".getBytes());
+                        }
+                        catch (IOException e)
+                        {
+                            Toast.makeText(getApplicationContext(),"Error",Toast.LENGTH_LONG).show();
+                        }
+                    }}
+
+
+                    if(strength> 10)
                 {
 
                     if(anglea < 115 && angle >80) {
@@ -120,7 +188,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             }
                         }
                     }
-                    else if(anglea < 25 && anglea > 345) {
+                    else if(anglea < 25 || anglea > 345) {
                         if (btSocket!=null)
                         {
                             try
