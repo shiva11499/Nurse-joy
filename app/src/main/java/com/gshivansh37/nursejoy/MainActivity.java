@@ -1,5 +1,6 @@
 package com.gshivansh37.nursejoy;
 
+import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
@@ -8,10 +9,13 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,7 +41,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TextView mTextViewStrengthLeft;
     private ImageButton qr_code;
     private TextView qr_result;
-
+    private ImageButton rotate_left;
+    private ImageButton rotate_right;
 //    private static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 //    private BluetoothSocket btSocket = null;
 //    BluetoothAdapter mBluetoothAdapter;
@@ -45,11 +50,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //    private static final String TAG = "bluetooth1";
 //    OutputStream outStream;
     String address = null;
+    public int anglea;
     BluetoothAdapter myBluetooth = null;
     BluetoothSocket btSocket = null;
     private boolean isBtConnected = false;
     static final UUID myUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,7 +66,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         text = (EditText) findViewById(R.id.text);
         send = (Button) findViewById(R.id.send);
         qr_code = (ImageButton) findViewById(R.id.qr_code);
-
+        rotate_left = (ImageButton) findViewById(R.id.rotate_left);
+        rotate_right = (ImageButton) findViewById(R.id.rotate_right);
         new ConnectBT().execute(); //Call the class to connect
 
         mTextViewAngleLeft = (TextView) findViewById(R.id.textView_angle_left);
@@ -71,13 +79,58 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //attaching onclick listener
         qr_code.setOnClickListener(this);
 
+        final Switch simpleSwitch = (Switch) findViewById(R.id.switch1);
+        final Switch simpleSwitch2 = (Switch) findViewById(R.id.switch2);
+
+        simpleSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                if(simpleSwitch.isChecked()) {
+                    if (btSocket!=null)
+                    {
+                        try
+                        {
+                            btSocket.getOutputStream().write("k".getBytes());
+                        }
+                        catch (IOException e)
+                        {
+                            Toast.makeText(getApplicationContext(),"Error",Toast.LENGTH_LONG).show();
+                        }
+                    }
+                }
+                // do something, the isChecked will be
+                // true if the switch is in the On position
+            }
+        });
+
+        simpleSwitch2.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                if(simpleSwitch2.isChecked()) {
+                    if (btSocket!=null)
+                    {
+                        try
+                        {
+                            btSocket.getOutputStream().write("x".getBytes());
+                        }
+                        catch (IOException e)
+                        {
+                            Toast.makeText(getApplicationContext(),"Error",Toast.LENGTH_LONG).show();
+                        }
+                    }
+                }
+                // do something, the isChecked will be
+                // true if the switch is in the On position
+            }
+        });
+
         JoystickView joystickLeft = (JoystickView) findViewById(R.id.joystickView);
         joystickLeft.setOnMoveListener(new JoystickView.OnMoveListener() {
             @Override
             public void onMove(int angle, int strength) {
                 mTextViewAngleLeft.setText(angle + "");
                 mTextViewStrengthLeft.setText(strength + "");
-                int anglea = Integer.valueOf(mTextViewAngleLeft.getText().toString());
+                anglea = Integer.valueOf(mTextViewAngleLeft.getText().toString());
                 if(strength< 20){
                     if (btSocket!=null)
                     {
@@ -87,7 +140,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         }
                         catch (IOException e)
                         {
-                            Toast.makeText(getApplicationContext(),"Error",Toast.LENGTH_LONG).show();
+//                            Toast.makeText(getApplicationContext(),"Error",Toast.LENGTH_LONG).show();
                         }
                     }
                 }
@@ -100,9 +153,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         }
                         catch (IOException e)
                         {
-                            Toast.makeText(getApplicationContext(),"Error",Toast.LENGTH_LONG).show();
+//                            Toast.makeText(getApplicationContext(),"Error",Toast.LENGTH_LONG).show();
                         }
                     }
+                    speed();
                 }
                 else if(strength< 60 && strength>40){
                     if (btSocket!=null)
@@ -113,9 +167,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         }
                         catch (IOException e)
                         {
-                            Toast.makeText(getApplicationContext(),"Error",Toast.LENGTH_LONG).show();
+//                            Toast.makeText(getApplicationContext(),"Error",Toast.LENGTH_LONG).show();
                         }
                     }
+                    speed();
                 }
                 else if(strength< 80 && strength>60){
                     if (btSocket!=null)
@@ -126,11 +181,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         }
                         catch (IOException e)
                         {
-                            Toast.makeText(getApplicationContext(),"Error",Toast.LENGTH_LONG).show();
+//                            Toast.makeText(getApplicationContext(),"Error",Toast.LENGTH_LONG).show();
                         }
                     }
-
-
+                    speed();
                 }
                 else if(strength> 80){
                     if (btSocket!=null)
@@ -141,131 +195,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         }
                         catch (IOException e)
                         {
-                            Toast.makeText(getApplicationContext(),"Error",Toast.LENGTH_LONG).show();
-                        }
-                    }}
-
-
-                    if(strength> 10)
-                {
-
-                    if(anglea < 115 && angle >80) {
-                        if (btSocket!=null)
-                        {
-                            try
-                            {
-                                btSocket.getOutputStream().write("1".getBytes());
-                            }
-                            catch (IOException e)
-                            {
-                                Toast.makeText(getApplicationContext(),"Error",Toast.LENGTH_LONG).show();
-                            }
+//                            Toast.makeText(getApplicationContext(),"Error",Toast.LENGTH_LONG).show();
                         }
                     }
-                    else if(anglea < 285 && anglea > 260){
-                        if (btSocket!=null)
-                        {
-                            try
-                            {
-                                btSocket.getOutputStream().write("2".getBytes());
-                            }
-                            catch (IOException e)
-                            {
-                                Toast.makeText(getApplicationContext(),"Error",Toast.LENGTH_LONG).show();
-                            }
-                        }
-                    }
-                    else if(anglea < 205 && anglea >155) {
-                        if (btSocket!=null)
-                        {
-                            try
-                            {
-                                btSocket.getOutputStream().write("3".getBytes());
-                            }
-                            catch (IOException e)
-                            {
-                                Toast.makeText(getApplicationContext(),"Error",Toast.LENGTH_LONG).show();
-                            }
-                        }
-                    }
-                    else if(anglea < 25 || anglea > 345) {
-                        if (btSocket!=null)
-                        {
-                            try
-                            {
-                                btSocket.getOutputStream().write("4".getBytes());
-                            }
-                            catch (IOException e)
-                            {
-                                Toast.makeText(getApplicationContext(),"Error",Toast.LENGTH_LONG).show();
-                            }
-                        }
-                    }
-                    else if(anglea < 79 && anglea > 25) {
-                        if (btSocket!=null)
-                        {
-                            try
-                            {
-                                btSocket.getOutputStream().write("5".getBytes());
-                            }
-                            catch (IOException e)
-                            {
-                                Toast.makeText(getApplicationContext(),"Error",Toast.LENGTH_LONG).show();
-                            }
-                        }
-                    }
-                    else if(anglea < 259 && anglea > 206) {
-                        if (btSocket!=null)
-                        {
-                            try
-                            {
-                                btSocket.getOutputStream().write("7".getBytes());
-                            }
-                            catch (IOException e)
-                            {
-                                Toast.makeText(getApplicationContext(),"Error",Toast.LENGTH_LONG).show();
-                            }
-                        }
-                    }
-                    else if(anglea < 344 && anglea > 286) {
-                        if (btSocket!=null)
-                        {
-                            try
-                            {
-                                btSocket.getOutputStream().write("8".getBytes());
-                            }
-                            catch (IOException e)
-                            {
-                                Toast.makeText(getApplicationContext(),"Error",Toast.LENGTH_LONG).show();
-                            }
-                        }
-                    }
-                    else if(anglea < 154 && anglea > 116) {
-                        if (btSocket!=null)
-                        {
-                            try
-                            {
-                                btSocket.getOutputStream().write("6".getBytes());
-                            }
-                            catch (IOException e)
-                            {
-                                Toast.makeText(getApplicationContext(),"Error",Toast.LENGTH_LONG).show();
-                            }
-                        }
-                    }
-                }
-                else {
-                    if (btSocket!=null)
-                    {
-                        try
-                        {
-                            btSocket.getOutputStream().write("0".getBytes());
-                        }
-                        catch (IOException e)
-                        {
-                            Toast.makeText(getApplicationContext(),"Error",Toast.LENGTH_LONG).show();
-                        }
-                    }
+                    speed();
                 }
             }
         });
@@ -302,6 +235,114 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //            }
 //        }
 
+        rotate_left.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch(event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        if (btSocket!=null)
+                        {
+                            try
+                            {
+                                btSocket.getOutputStream().write("l".getBytes());
+                            }
+                            catch (IOException e)
+                            {
+//                                Toast.makeText(getApplicationContext(),"Error",Toast.LENGTH_LONG).show();
+                            }
+                        }
+                        // PRESSED
+                        return true; // if you want to handle the touch event
+                    case MotionEvent.ACTION_UP:
+                        // RELEASED
+                        if (btSocket!=null)
+                        {
+                            try
+                            {
+                                btSocket.getOutputStream().write("0".getBytes());
+                            }
+                            catch (IOException e)
+                            {
+//                                Toast.makeText(getApplicationContext(),"Error",Toast.LENGTH_LONG).show();
+                            }
+                        }
+                        return true; // if you want to handle the touch event
+                }
+                return false;
+            }
+        });
+
+        rotate_right.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch(event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        if (btSocket!=null)
+                        {
+                            try
+                            {
+                                btSocket.getOutputStream().write("r".getBytes());
+                            }
+                            catch (IOException e)
+                            {
+//                                Toast.makeText(getApplicationContext(),"Error",Toast.LENGTH_LONG).show();
+                            }
+                        }
+                        // PRESSED
+                        return true; // if you want to handle the touch event
+                    case MotionEvent.ACTION_UP:
+                        // RELEASED
+                        if (btSocket!=null)
+                        {
+                            try
+                            {
+                                btSocket.getOutputStream().write("0".getBytes());
+                            }
+                            catch (IOException e)
+                            {
+//                                Toast.makeText(getApplicationContext(),"Error",Toast.LENGTH_LONG).show();
+                            }
+                        }
+                        return true; // if you want to handle the touch event
+                }
+                return false;
+            }
+        });
+
+//        rotate_left.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (btSocket!=null)
+//                {
+//                    try
+//                    {
+//                        btSocket.getOutputStream().write("l".getBytes());
+//                    }
+//                    catch (IOException e)
+//                    {
+//                        Toast.makeText(getApplicationContext(),"Error",Toast.LENGTH_LONG).show();
+//                    }
+//                }
+//            }
+//        });
+
+//        rotate_right.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (btSocket!=null)
+//                {
+//                    try
+//                    {
+//                        btSocket.getOutputStream().write("r".getBytes());
+//                        Toast.makeText(getApplicationContext(),"l",Toast.LENGTH_LONG).show();
+//                    }
+//                    catch (IOException e)
+//                    {
+//                        Toast.makeText(getApplicationContext(),"Error",Toast.LENGTH_LONG).show();
+//                    }
+//                }
+//            }
+//        });
 
         send.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -310,6 +351,116 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
 
+
+
+    }
+
+    private void speed() {
+        if(anglea < 115 && anglea >80) {
+            if (btSocket!=null)
+            {
+                try
+                {
+                    btSocket.getOutputStream().write("1".getBytes());
+//                    Toast.makeText(getApplicationContext(),"r",Toast.LENGTH_LONG).show();
+                }
+                catch (IOException e)
+                {
+//                    Toast.makeText(getApplicationContext(),"Error",Toast.LENGTH_LONG).show();
+                }
+            }
+        }
+        else if(anglea < 285 && anglea > 260){
+            if (btSocket!=null)
+            {
+                try
+                {
+                    btSocket.getOutputStream().write("2".getBytes());
+                }
+                catch (IOException e)
+                {
+//                    Toast.makeText(getApplicationContext(),"Error",Toast.LENGTH_LONG).show();
+                }
+            }
+        }
+        else if(anglea < 205 && anglea >155) {
+            if (btSocket!=null)
+            {
+                try
+                {
+                    btSocket.getOutputStream().write("3".getBytes());
+                }
+                catch (IOException e)
+                {
+//                    Toast.makeText(getApplicationContext(),"Error",Toast.LENGTH_LONG).show();
+                }
+            }
+        }
+        else if(anglea < 25 || anglea > 345) {
+            if (btSocket!=null)
+            {
+                try
+                {
+                    btSocket.getOutputStream().write("4".getBytes());
+                }
+                catch (IOException e)
+                {
+//                    Toast.makeText(getApplicationContext(),"Error",Toast.LENGTH_LONG).show();
+                }
+            }
+        }
+        else if(anglea < 79 && anglea > 25) {
+            if (btSocket!=null)
+            {
+                try
+                {
+                    btSocket.getOutputStream().write("5".getBytes());
+                }
+                catch (IOException e)
+                {
+//                    Toast.makeText(getApplicationContext(),"Error",Toast.LENGTH_LONG).show();
+                }
+            }
+        }
+        else if(anglea < 259 && anglea > 206) {
+            if (btSocket!=null)
+            {
+                try
+                {
+                    btSocket.getOutputStream().write("7".getBytes());
+                }
+                catch (IOException e)
+                {
+//                    Toast.makeText(getApplicationContext(),"Error",Toast.LENGTH_LONG).show();
+                }
+            }
+        }
+        else if(anglea < 344 && anglea > 286) {
+            if (btSocket!=null)
+            {
+                try
+                {
+                    btSocket.getOutputStream().write("8".getBytes());
+                }
+                catch (IOException e)
+                {
+//                    Toast.makeText(getApplicationContext(),"Error",Toast.LENGTH_LONG).show();
+                }
+            }
+        }
+        else if(anglea < 154 && anglea > 116) {
+            if (btSocket!=null)
+            {
+                try
+                {
+                    btSocket.getOutputStream().write("6".getBytes());
+                }
+                catch (IOException e)
+                {
+//                    Toast.makeText(getApplicationContext(),"Error",Toast.LENGTH_LONG).show();
+                }
+            }
+        }
     }
 
     private BluetoothSocket createBluetoothSocket(BluetoothDevice device) throws IOException {
@@ -335,7 +486,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
             catch (IOException e)
             {
-                Toast.makeText(getApplicationContext(),"Error",Toast.LENGTH_LONG).show();
+//                Toast.makeText(getApplicationContext(),"Error",Toast.LENGTH_LONG).show();
             }
         }
 
@@ -436,7 +587,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (result != null) {
             //if qrcode has nothing in it
             if (result.getContents() == null) {
-                Toast.makeText(this, "Result Not Found", Toast.LENGTH_LONG).show();
+//                Toast.makeText(this, "Result Not Found", Toast.LENGTH_LONG).show();
             } else {
                 //if qr contains data
                 try {
@@ -450,7 +601,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     //that means the encoded format not matches
                     //in this case you can display whatever data is available on the qrcode
                     //to a toast
-                    Toast.makeText(this, result.getContents(), Toast.LENGTH_LONG).show();
+//                    Toast.makeText(this, result.getContents(), Toast.LENGTH_LONG).show();
                 }
             }
         } else {

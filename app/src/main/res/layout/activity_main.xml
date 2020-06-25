@@ -33,7 +33,9 @@
         android:layout_alignParentTop="true"
         android:layout_marginStart="29dp"
         android:layout_marginTop="82dp"
-        android:background="@drawable/qr_code" />
+        android:background="@drawable/qr_code"
+        android:layout_marginLeft="29dp"
+        android:layout_alignLeft="@+id/joystickView" />
 
     <TextView
         android:id="@+id/qr_result"
@@ -42,17 +44,32 @@
         android:layout_alignStart="@+id/textView_angle_left"
         android:layout_alignParentTop="true"
         android:layout_marginTop="169dp"
-        android:textSize="24sp" />
+        android:textSize="24sp"
+        android:layout_alignLeft="@+id/textView_angle_left" />
 
     <Switch
+        android:id="@+id/switch1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="Kill  "
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_marginTop="101dp"
         android:layout_marginEnd="39dp"
         android:layout_marginRight="39dp" />
+
+    <Switch
+        android:id="@+id/switch2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="138dp"
+        android:layout_marginEnd="38dp"
+        android:layout_marginRight="38dp"
+        android:text="Reset  " />
 
     <TextView
         android:id="@+id/textView_angle_left"
@@ -65,7 +82,8 @@
         android:layout_marginLeft="234dp"
         android:layout_marginTop="110dp"
         android:text="0°"
-        android:visibility="invisible"/>
+        android:visibility="invisible"
+        />
 
     <TextView
         android:id="@+id/textView_strength_left"
@@ -76,19 +94,22 @@
         android:layout_marginTop="-26dp"
         android:layout_marginEnd="47dp"
         android:text="0%"
-        android:visibility="invisible"/>
+        android:visibility="invisible"
+        android:layout_alignRight="@+id/textView_angle_left"
+        android:layout_marginRight="47dp" />
 
     <ImageButton
         android:id="@+id/rotate_left"
-        android:layout_width="59dp"
-        android:layout_height="54dp"
+        android:layout_width="72dp"
+        android:layout_height="68dp"
+        android:scaleX="-1"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="33dp"
-        android:layout_marginLeft="33dp"
-        android:layout_marginTop="306dp"
-        android:background="@drawable/rotate_right" />
+        android:layout_marginStart="27dp"
+        android:layout_marginLeft="27dp"
+        android:layout_marginTop="293dp"
+        android:background="@drawable/reload" />
 
     <ImageView
         android:layout_width="155dp"
@@ -103,15 +124,16 @@
 
     <ImageButton
         android:id="@+id/rotate_right"
-        android:layout_width="53dp"
-        android:layout_height="49dp"
+        android:layout_width="72dp"
+        android:layout_height="68dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_marginTop="312dp"
-        android:layout_marginEnd="24dp"
-        android:layout_marginRight="24dp"
-        android:background="@drawable/rotate_left" />
+        android:layout_marginTop="300dp"
+        android:layout_marginEnd="17dp"
+        android:layout_marginRight="17dp"
+        android:background="@drawable/reload"
+        />
 
     <EditText
         android:id="@+id/text"
